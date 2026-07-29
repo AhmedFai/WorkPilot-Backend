@@ -8,7 +8,7 @@ import jakarta.persistence.Table
 import java.time.LocalDateTime
 
 @Entity
-@Table(name = "company")
+@Table(name = "companies")
 class Company(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,5 +17,5 @@ class Company(
     var email: String,
     var website: String? = null,
     var isActive: Boolean = true,
-    var createdAt: LocalDateTime? = LocalDateTime.now()
+    var createdAt: LocalDateTime = LocalDateTime.now()
 )
