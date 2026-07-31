@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.NotBlank
 
 data class CreateCompanyRequest(
+
     @field:NotBlank(message = "Name cannot be empty")
     val name: String,
 
@@ -12,4 +13,5 @@ data class CreateCompanyRequest(
     val email: String,
 
     val website: String? = null
+
 )

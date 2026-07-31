@@ -37,4 +37,30 @@ class GlobalExceptionHandler {
         )
     }
 
+    @ExceptionHandler(UserAlreadyExistsException::class)
+    fun handleUserAlreadyExistsException(ex: UserAlreadyExistsException): ResponseEntity<ErrorResponse>{
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(
+            ErrorResponse(
+                message = "User already registered",
+                errors = mapOf(
+                    "email" to (ex.message ?: "Email already registered")
+                )
+            )
+        )
+    }
+
+    @ExceptionHandler(CompanyNotFoundException::class)
+    fun handleCompanyNotFoundException(
+        ex: CompanyNotFoundException
+    ): ResponseEntity<ErrorResponse> {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(
+            ErrorResponse(
+                message = "Company not found",
+                errors = mapOf(
+                    "companyId" to (ex.message ?: "Company not found")
+                )
+            )
+        )
+    }
+
 }
