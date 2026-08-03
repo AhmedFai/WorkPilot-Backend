@@ -17,7 +17,7 @@ import java.time.LocalDateTime
 
 @Entity
 @Table(name = "tasks")
-class Task (
+class Task(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
@@ -31,7 +31,7 @@ class Task (
     @Enumerated(EnumType.STRING)
     var priority: Priority,
     @Enumerated(EnumType.STRING)
-    var status: Status,
+    var status: Status = Status.PENDING,
     var deadline: LocalDateTime = LocalDateTime.now(),
     var isActive: Boolean = true,
     var createdAt: LocalDateTime = LocalDateTime.now()

@@ -63,4 +63,30 @@ class GlobalExceptionHandler {
         )
     }
 
+    @ExceptionHandler(UserNotFoundException::class)
+    fun handleUserNotFoundException(
+        ex: UserNotFoundException
+    ): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(
+                ErrorResponse(
+                    message = ex.message!!
+                )
+            )
+    }
+
+    @ExceptionHandler(ProjectNotFoundException::class)
+    fun handleProjectNotFoundException(
+        ex: ProjectNotFoundException
+    ): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(
+                ErrorResponse(
+                    message = ex.message!!
+                )
+            )
+    }
+
 }
