@@ -89,4 +89,17 @@ class GlobalExceptionHandler {
             )
     }
 
+    @ExceptionHandler(TaskNotFoundException::class)
+    fun handleTaskNotFoundException(
+        ex: TaskNotFoundException
+    ): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.NOT_FOUND)
+            .body(
+                ErrorResponse(
+                    message = ex.message!!
+                )
+            )
+    }
+
 }

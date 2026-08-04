@@ -1,8 +1,10 @@
 package com.faizan.workpilot.service
 
 import com.faizan.workpilot.dto.request.CreateProjectRequest
+import com.faizan.workpilot.dto.request.UpdateProjectRequest
 import com.faizan.workpilot.dto.response.ProjectResponse
 import com.faizan.workpilot.exception.CompanyNotFoundException
+import com.faizan.workpilot.exception.ProjectNotFoundException
 import com.faizan.workpilot.exception.UserNotFoundException
 import com.faizan.workpilot.mapper.toEntity
 import com.faizan.workpilot.mapper.toResponse
@@ -10,6 +12,7 @@ import com.faizan.workpilot.repository.CompanyRepository
 import com.faizan.workpilot.repository.ProjectRepository
 import com.faizan.workpilot.repository.UserRepository
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 
 @Service
 class ProjectService(
@@ -32,6 +35,56 @@ class ProjectService(
         val project = request.toEntity(company,projectHead)
         val savedProject = projectRepository.save(project)
         return savedProject.toResponse()
+    }
+
+    @Transactional
+    fun getAllProjects(): List<ProjectResponse> {
+        val project = projectRepository.findAllByIsActiveTrue()
+        return project.map { it.toResponse() }
+    }
+
+    @Transactional
+    fun getProjectById(id: Long): ProjectResponse{
+        val project = projectRepository.findById(id)
+            .orElseThrow {
+                ProjectNotFoundException("Project with id $id not found")
+            }
+
+        return project.toResponse()
+    }
+
+    @Transactional
+    fun updateProject(id: Long, request: UpdateProjectRequest): ProjectResponse {
+        val project = projectRepository.findById(id)
+            .orElseThrow {
+                ProjectNotFoundException("Project with id $id not found")
+            }
+        val company = companyRepository.findById(request.companyId)
+            .orElseThrow {
+                CompanyNotFoundException("Company with id ${request.companyId} not found")
+            }
+        val projectHead = userRepository.findById(request.projectHeadId)
+            .orElseThrow {
+                UserNotFoundException("User with id ${request.projectHeadId} not found")
+            }
+
+        project.name = request.name
+        project.description = request.description
+        project.company = company
+        project.projectHead = projectHead
+        val updatedProject = projectRepository.save(project)
+        return updatedProject.toResponse()
+    }
+
+    @Transactional
+    fun deleteProject(id: Long): ProjectResponse {
+        val deleteProject = projectRepository.findById(id)
+            .orElseThrow {
+                ProjectNotFoundException("Project with id $id not found")
+            }
+        deleteProject.isActive = false
+        val deletedProject = projectRepository.save(deleteProject)
+        return deletedProject.toResponse()
     }
 
 }
