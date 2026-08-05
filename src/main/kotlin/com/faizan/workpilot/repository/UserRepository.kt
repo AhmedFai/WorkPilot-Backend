@@ -9,6 +9,8 @@ interface UserRepository: JpaRepository<User, Long>{
 
     fun findAllByIsActiveTrue(): List<User>
 
+    fun findByEmail(email: String): User?
+
     // TODO: for all the entities
     //- Replace @Transactional workaround with EntityGraph / Fetch Join
     //- Hide soft-deleted records in findById()

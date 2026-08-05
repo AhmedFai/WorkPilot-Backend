@@ -6,12 +6,15 @@ import com.faizan.workpilot.dto.response.UserResponse
 import com.faizan.workpilot.entity.Company
 import com.faizan.workpilot.entity.User
 
-fun CreateUserRequest.toEntity(company: Company): User {
+fun CreateUserRequest.toEntity(
+    company: Company,
+    hashedPassword: String
+): User {
     return User(
         firstName = firstName,
         lastName = lastName,
         email = email,
-        password = password,
+        password = hashedPassword,
         phoneNumber = phoneNumber,
         designation = designation,
         role = role,

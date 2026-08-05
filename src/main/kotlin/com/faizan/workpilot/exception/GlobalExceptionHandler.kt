@@ -102,4 +102,30 @@ class GlobalExceptionHandler {
             )
     }
 
+    @ExceptionHandler(InvalidCredentialsException::class)
+    fun handleInvalidCredentialsException(
+        ex: InvalidCredentialsException
+    ): ResponseEntity<ErrorResponse> {
+        return ResponseEntity
+            .status(HttpStatus.UNAUTHORIZED)
+            .body(
+                ErrorResponse(
+                    message = ex.message!!
+                )
+            )
+    }
+
+    @ExceptionHandler(AccountDisabledException::class)
+    fun handleAccountDisabledException(
+        ex: AccountDisabledException
+    ): ResponseEntity<ErrorResponse> {
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(
+            ErrorResponse(
+                message = ex.message ?: "Account is disabled",
+                errors = null
+            )
+        )
+    }
+
 }

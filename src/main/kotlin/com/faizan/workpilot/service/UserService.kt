@@ -12,13 +12,15 @@ import com.faizan.workpilot.mapper.toEntity
 import com.faizan.workpilot.mapper.toResponse
 import com.faizan.workpilot.repository.CompanyRepository
 import com.faizan.workpilot.repository.UserRepository
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class UserService(
     private val userRepository: UserRepository,
-    private val companyRepository: CompanyRepository
+    private val companyRepository: CompanyRepository,
+    private val passwordEncoder: PasswordEncoder
 ) {
 
     fun createUser(
@@ -31,7 +33,8 @@ class UserService(
             .orElseThrow {
                 CompanyNotFoundException("Company with id ${request.companyId} not found")
             }
-        val user = request.toEntity(company)
+        val hashedPassword = passwordEncoder.encode(request.password)
+        val user = request.toEntity(company, hashedPassword)
         val savedUser = userRepository.save(user)
         return savedUser.toResponse()
     }
