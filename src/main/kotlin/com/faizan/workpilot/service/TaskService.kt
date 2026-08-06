@@ -11,6 +11,7 @@ import com.faizan.workpilot.mapper.toResponse
 import com.faizan.workpilot.repository.ProjectRepository
 import com.faizan.workpilot.repository.TaskRepository
 import com.faizan.workpilot.repository.UserRepository
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,6 +22,7 @@ class TaskService(
     private val taskRepository: TaskRepository
 ) {
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     fun createTask(
         request: CreateTaskRequest
     ): TaskResponse {
@@ -38,12 +40,14 @@ class TaskService(
         return savedTask.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun getAllTasks(): List<TaskResponse> {
         val getAllTasks = taskRepository.findAllByIsActiveTrue()
         return getAllTasks.map { it.toResponse() }
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun getTaskById(id: Long): TaskResponse {
         val task = taskRepository.findById(id).orElseThrow {
@@ -52,6 +56,7 @@ class TaskService(
         return task.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun updateTask(
         id: Long,
@@ -79,6 +84,7 @@ class TaskService(
         return updatedTask.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun deleteTask(
         id: Long

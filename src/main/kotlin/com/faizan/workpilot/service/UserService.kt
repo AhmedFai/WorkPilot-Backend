@@ -12,6 +12,7 @@ import com.faizan.workpilot.mapper.toEntity
 import com.faizan.workpilot.mapper.toResponse
 import com.faizan.workpilot.repository.CompanyRepository
 import com.faizan.workpilot.repository.UserRepository
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -23,6 +24,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder
 ) {
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     fun createUser(
         request: CreateUserRequest
     ): UserResponse {
@@ -39,12 +41,14 @@ class UserService(
         return savedUser.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Transactional
     fun getAllUsers(): List<UserResponse> {
         val users = userRepository.findAllByIsActiveTrue()
         return users.map { it.toResponse() }
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Transactional
     fun getUserById(id: Long): UserResponse {
         val user = userRepository.findById(id).orElseThrow {
@@ -53,6 +57,7 @@ class UserService(
         return user.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Transactional
     fun updateUser(
         id: Long,
@@ -76,6 +81,7 @@ class UserService(
         return updatedUser.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     @Transactional
     fun deleteUser(
         id: Long

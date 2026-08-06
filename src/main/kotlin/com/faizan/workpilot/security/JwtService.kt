@@ -12,15 +12,45 @@ import javax.crypto.SecretKey
 
 @Service
 class JwtService(
-    @Value("\${jwt.secret}")
-    private val secretKey: String,
 
-    @Value("\${jwt.expiration}")
-    private val expiration: Long
+    @Value("\${jwt.access.secret}")
+    private val accessSecret: String,
+
+    @Value("\${jwt.refresh.secret}")
+    private val refreshSecret: String,
+
+    @Value("\${jwt.access.expiration}")
+    private val accessExpiration: Long,
+
+    @Value("\${jwt.refresh.expiration}")
+    private val refreshExpiration: Long
+
 ) {
 
-    fun generateToken(
+    fun generateAccessToken(
         user: User
+    ): String {
+        return generateToken(
+            user,
+            accessExpiration,
+            getAccessSigningKey()
+        )
+    }
+
+    fun generateRefreshToken(
+        user: User
+    ): String {
+        return generateToken(
+            user,
+            refreshExpiration,
+            getRefreshSigningKey()
+        )
+    }
+
+    private fun generateToken(
+        user: User,
+        expiration: Long,
+        signingKey: SecretKey
     ): String {
 
         return Jwts
@@ -37,68 +67,125 @@ class JwtService(
 
     }
 
-    fun extractEmail(
+    fun extractAccessEmail(
         token: String
     ): String {
-        return extractClaim(token) {
+        return extractClaim(
+            token,
+            getAccessSigningKey()
+        ) {
             it.subject
         }
     }
 
-    fun extractExpiration(
+    fun extractRefreshEmail(
         token: String
-    ): Date {
-
-        return extractClaim(token) {
-            it.expiration
+    ): String {
+        return extractClaim(
+            token,
+            getRefreshSigningKey()
+        ) {
+            it.subject
         }
     }
 
-    fun isTokenExpired(
-        token: String
-    ): Boolean {
-
-        return extractExpiration(token).before(Date())
-
-    }
-
-    fun validateToken(
+    fun validateAccessToken(
         token: String,
         user: User
     ): Boolean {
 
-        val email = extractEmail(token)
+        val email = extractAccessEmail(token)
 
         return email == user.email &&
-                !isTokenExpired(token)
+                !isTokenExpired(
+                    token,
+                    getAccessSigningKey()
+                )
+    }
+
+    fun validateRefreshToken(
+        token: String,
+        user: User
+    ): Boolean {
+
+        val email = extractRefreshEmail(token)
+
+        return email == user.email &&
+                !isTokenExpired(
+                    token,
+                    getRefreshSigningKey()
+                )
+    }
+
+    private fun isTokenExpired(
+        token: String,
+        signingKey: SecretKey
+    ): Boolean {
+
+        return extractExpiration(
+            token,
+            signingKey
+        ).before(Date())
+
+    }
+
+    private fun extractExpiration(
+        token: String,
+        signingKey: SecretKey
+    ): Date {
+
+        return extractClaim(
+            token,
+            signingKey
+        ) {
+            it.expiration
+        }
 
     }
 
     private fun <T> extractClaim(
         token: String,
+        signingKey: SecretKey,
         claimsResolver: (Claims) -> T
     ): T {
 
-        val claims = extractAllClaims(token)
+        val claims = extractAllClaims(
+            token,
+            signingKey
+        )
 
         return claimsResolver(claims)
+
     }
 
     private fun extractAllClaims(
-        token: String
+        token: String,
+        signingKey: SecretKey
     ): Claims {
+
         return Jwts
             .parser()
             .verifyWith(signingKey)
             .build()
             .parseSignedClaims(token)
             .payload
+
     }
 
-    private val signingKey: SecretKey by lazy {
-        Keys.hmacShaKeyFor(
-            secretKey.toByteArray(StandardCharsets.UTF_8)
+    private fun getAccessSigningKey(): SecretKey {
+
+        return Keys.hmacShaKeyFor(
+            accessSecret.toByteArray(StandardCharsets.UTF_8)
         )
+
+    }
+
+    private fun getRefreshSigningKey(): SecretKey {
+
+        return Keys.hmacShaKeyFor(
+            refreshSecret.toByteArray(StandardCharsets.UTF_8)
+        )
+
     }
 
 }

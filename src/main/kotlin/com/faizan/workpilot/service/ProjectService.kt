@@ -11,6 +11,7 @@ import com.faizan.workpilot.mapper.toResponse
 import com.faizan.workpilot.repository.CompanyRepository
 import com.faizan.workpilot.repository.ProjectRepository
 import com.faizan.workpilot.repository.UserRepository
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -21,6 +22,7 @@ class ProjectService(
     private val companyRepository: CompanyRepository
 ) {
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN', 'ADMIN')")
     fun createProject(
         request: CreateProjectRequest
     ): ProjectResponse {
@@ -37,12 +39,14 @@ class ProjectService(
         return savedProject.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun getAllProjects(): List<ProjectResponse> {
         val project = projectRepository.findAllByIsActiveTrue()
         return project.map { it.toResponse() }
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun getProjectById(id: Long): ProjectResponse{
         val project = projectRepository.findById(id)
@@ -53,6 +57,7 @@ class ProjectService(
         return project.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN','PROJECT_HEAD')")
     @Transactional
     fun updateProject(id: Long, request: UpdateProjectRequest): ProjectResponse {
         val project = projectRepository.findById(id)
@@ -76,6 +81,7 @@ class ProjectService(
         return updatedProject.toResponse()
     }
 
+    @PreAuthorize("hasAnyRole('SUPER_ADMIN','ADMIN')")
     @Transactional
     fun deleteProject(id: Long): ProjectResponse {
         val deleteProject = projectRepository.findById(id)

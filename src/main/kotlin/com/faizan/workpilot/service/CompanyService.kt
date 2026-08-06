@@ -9,6 +9,7 @@ import com.faizan.workpilot.exception.CompanyNotFoundException
 import com.faizan.workpilot.mapper.toEntity
 import com.faizan.workpilot.mapper.toResponse
 import com.faizan.workpilot.repository.CompanyRepository
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
 
 @Service
@@ -16,6 +17,7 @@ class CompanyService(
     private val companyRepository: CompanyRepository
 ) {
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun createCompany(request: CreateCompanyRequest): CompanyResponse {
         if (companyRepository.existsByEmail(request.email)) {
             throw CompanyAlreadyExistsException("Email already registered")
@@ -25,11 +27,13 @@ class CompanyService(
         return savedCompany.toResponse()
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun getAllCompanies(): List<CompanyResponse> {
         val companies = companyRepository.findAllByIsActiveTrue()
         return companies.map { it.toResponse() }
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun getCompanyById(id: Long): CompanyResponse {
         val company = companyRepository.findById(id).orElseThrow {
             CompanyNotFoundException("Company with id $id not found")
@@ -37,6 +41,7 @@ class CompanyService(
         return company.toResponse()
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun updateCompany(
         id: Long,
         request: UpdateCompanyRequest
@@ -51,6 +56,7 @@ class CompanyService(
         return updatedCompany.toResponse()
     }
 
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
     fun deletedCompany(
         id: Long
     ): CompanyResponse {
