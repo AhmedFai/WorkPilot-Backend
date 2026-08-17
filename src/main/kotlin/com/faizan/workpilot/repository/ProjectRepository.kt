@@ -7,4 +7,12 @@ interface ProjectRepository: JpaRepository<Project, Long> {
 
     fun findAllByIsActiveTrue(): List<Project>
 
+    fun countByCompanyIdAndIsActiveTrue(
+        companyId: Long
+    ): Long
+
+    fun findTop5ByCompanyIdAndIsActiveTrueOrderByCreatedAtDesc(
+        companyId: Long
+    ): List<Project>
+
 }

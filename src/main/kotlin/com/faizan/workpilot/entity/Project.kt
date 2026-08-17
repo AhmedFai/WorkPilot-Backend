@@ -1,6 +1,9 @@
 package com.faizan.workpilot.entity
 
+import com.faizan.workpilot.enums.ProjectStatus
 import jakarta.persistence.Entity
+import jakarta.persistence.EnumType
+import jakarta.persistence.Enumerated
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
@@ -18,6 +21,8 @@ class Project(
     var id: Long? = null,
     var name: String,
     var description: String? = null,
+    @Enumerated(EnumType.STRING)
+    var status: ProjectStatus = ProjectStatus.PLANNED,
     @ManyToOne
     @JoinColumn(name = "company_id")
     var company: Company,

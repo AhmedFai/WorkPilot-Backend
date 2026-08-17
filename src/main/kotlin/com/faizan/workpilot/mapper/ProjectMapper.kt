@@ -3,6 +3,7 @@ package com.faizan.workpilot.mapper
 import com.faizan.workpilot.dto.request.CreateProjectRequest
 import com.faizan.workpilot.dto.response.CompanySummaryResponse
 import com.faizan.workpilot.dto.response.ProjectResponse
+import com.faizan.workpilot.dto.response.RecentProjectResponse
 import com.faizan.workpilot.dto.response.UserSummaryResponse
 import com.faizan.workpilot.entity.Company
 import com.faizan.workpilot.entity.Project
@@ -33,5 +34,14 @@ fun Project.toResponse(): ProjectResponse {
         ),
         isActive = isActive,
         createdAt = createdAt.toString()
+    )
+}
+
+fun Project.toRecentProjectResponse(): RecentProjectResponse {
+    return RecentProjectResponse(
+        id = id!!,
+        name = name,
+        status = status,
+        logoUrl = null
     )
 }

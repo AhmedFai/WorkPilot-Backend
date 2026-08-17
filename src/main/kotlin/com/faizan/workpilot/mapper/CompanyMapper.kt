@@ -1,6 +1,7 @@
 package com.faizan.workpilot.mapper
 
 import com.faizan.workpilot.dto.request.CreateCompanyRequest
+import com.faizan.workpilot.dto.response.CompanyDashboardResponse
 import com.faizan.workpilot.dto.response.CompanyResponse
 import com.faizan.workpilot.entity.Company
 
@@ -20,5 +21,13 @@ fun Company.toResponse(): CompanyResponse {
         website = website,
         isActive = isActive,
         createdAt = createdAt.toString()
+    )
+}
+
+fun Company.toDashboardResponse(): CompanyDashboardResponse {
+    return CompanyDashboardResponse(
+        id = this.id!!,
+        name = this.name,
+        logoUrl = null
     )
 }
