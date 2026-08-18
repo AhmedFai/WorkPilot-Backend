@@ -26,8 +26,9 @@ fun Company.toResponse(): CompanyResponse {
 
 fun Company.toDashboardResponse(): CompanyDashboardResponse {
     return CompanyDashboardResponse(
-        id = this.id!!,
-        name = this.name,
+        id = id!!,
+        name = name,
+        email = email,
         logoUrl = null
     )
 }

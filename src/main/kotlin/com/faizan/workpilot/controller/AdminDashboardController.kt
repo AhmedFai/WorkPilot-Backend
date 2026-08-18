@@ -1,6 +1,7 @@
 package com.faizan.workpilot.controller
 
 import com.faizan.workpilot.dto.response.AdminDashboardResponse
+import com.faizan.workpilot.dto.response.SuccessResponse
 import com.faizan.workpilot.service.AdminDashboardService
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
@@ -14,9 +15,13 @@ class AdminDashboardController(
 ) {
 
     @GetMapping("/dashboard")
-    fun getDashboard(): ResponseEntity<AdminDashboardResponse> {
+    fun getDashboard(): ResponseEntity<SuccessResponse<AdminDashboardResponse>> {
+        val dashboardData = adminDashboardService.getDashboard()
         return ResponseEntity.ok(
-            adminDashboardService.getDashboard()
+            SuccessResponse(
+                message = "Admin dashboard fetched successfully",
+                data = dashboardData
+            )
         )
     }
 }
