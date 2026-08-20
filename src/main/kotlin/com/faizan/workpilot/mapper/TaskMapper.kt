@@ -1,6 +1,7 @@
 package com.faizan.workpilot.mapper
 
 import com.faizan.workpilot.dto.request.CreateTaskRequest
+import com.faizan.workpilot.dto.response.EmployeeTodayTaskResponse
 import com.faizan.workpilot.dto.response.ProjectSummaryResponse
 import com.faizan.workpilot.dto.response.TaskResponse
 import com.faizan.workpilot.dto.response.UserSummaryResponse
@@ -39,5 +40,21 @@ fun Task.toResponse(): TaskResponse {
         deadline = deadline.toString(),
         isActive = isActive,
         createdAt = createdAt.toString()
+    )
+}
+
+fun Task.toEmployeeTodayTaskResponse():
+        EmployeeTodayTaskResponse {
+
+    return EmployeeTodayTaskResponse(
+        id = requireNotNull(id),
+        title = title,
+        project = ProjectSummaryResponse(
+            id = requireNotNull(project.id),
+            name = project.name
+        ),
+        priority = priority,
+        status = status,
+        deadline = deadline.toString()
     )
 }
