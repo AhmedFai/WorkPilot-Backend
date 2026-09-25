@@ -15,4 +15,12 @@ interface ProjectRepository: JpaRepository<Project, Long> {
         companyId: Long
     ): List<Project>
 
+    fun countByProjectHeadIdAndIsActiveTrue(
+        projectHeadId: Long
+    ): Long
+
+    fun findAllByProjectHeadIdAndIsActiveTrueOrderByCreatedAtDesc(
+        projectHeadId: Long
+    ): List<Project>
+
 }

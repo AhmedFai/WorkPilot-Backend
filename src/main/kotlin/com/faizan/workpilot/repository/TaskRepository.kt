@@ -30,4 +30,23 @@ interface TaskRepository: JpaRepository<Task, Long> {
         startOfNextDay: LocalDateTime
     ): List<Task>
 
+    fun countByProjectProjectHeadIdAndProjectIsActiveTrueAndIsActiveTrue(
+        projectHeadId: Long
+    ): Long
+
+    fun countByProjectProjectHeadIdAndProjectIsActiveTrueAndIsActiveTrueAndDeadlineBeforeAndStatusNotIn(
+        projectHeadId: Long,
+        deadline: LocalDateTime,
+        statuses: Collection<Status>
+    ): Long
+
+    fun countByProjectIdAndIsActiveTrue(
+        projectId: Long
+    ): Long
+
+    fun countByProjectIdAndStatusAndIsActiveTrue(
+        projectId: Long,
+        status: Status
+    ): Long
+
 }
