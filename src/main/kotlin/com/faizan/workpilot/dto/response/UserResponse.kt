@@ -11,7 +11,7 @@ data class UserResponse(
     val phoneNumber: String,
     val designation: String,
     val role: Role,
-    val company: CompanySummaryResponse,
+    val company: CompanySummaryResponse?,
     val isActive: Boolean,
     val createdAt: String
 )

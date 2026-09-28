@@ -31,7 +31,7 @@ class User (
     var role: Role,
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id")
-    var company: Company,
+    var company: Company? = null,
     var isActive: Boolean = true,
     var createdAt: LocalDateTime = LocalDateTime.now()
 )

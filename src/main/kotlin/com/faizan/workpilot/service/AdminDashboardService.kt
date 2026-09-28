@@ -28,7 +28,7 @@ class AdminDashboardService(
 
         val currentUser = currentUserService.getCurrentUser()
         val company = currentUser.company
-        val companyId = company.id!!
+        val companyId = company?.id!!
 
         val employeeCount =
             userRepository.countByCompanyIdAndRoleAndIsActiveTrue(

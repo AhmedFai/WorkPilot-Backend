@@ -7,7 +7,7 @@ import com.faizan.workpilot.entity.Company
 import com.faizan.workpilot.entity.User
 
 fun CreateUserRequest.toEntity(
-    company: Company,
+    company: Company?,
     hashedPassword: String
 ): User {
     return User(
@@ -31,10 +31,12 @@ fun User.toResponse(): UserResponse{
         phoneNumber = phoneNumber,
         designation = designation,
         role = role,
-        company = CompanySummaryResponse(
-            id = company.id!!,
-            name = company.name
-        ),
+        company = company?.let {
+            CompanySummaryResponse(
+                id = it.id!!,
+                name = it.name
+            )
+        },
         isActive = isActive,
         createdAt = createdAt.toString()
     )

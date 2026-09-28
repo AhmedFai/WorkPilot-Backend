@@ -4,6 +4,7 @@ import com.faizan.workpilot.dto.request.CreateUserRequest
 import com.faizan.workpilot.dto.request.UpdateUserRequest
 import com.faizan.workpilot.dto.response.UserResponse
 import com.faizan.workpilot.entity.Company
+import com.faizan.workpilot.enums.Role
 import com.faizan.workpilot.exception.CompanyAlreadyExistsException
 import com.faizan.workpilot.exception.CompanyNotFoundException
 import com.faizan.workpilot.exception.UserAlreadyExistsException
@@ -31,10 +32,19 @@ class UserService(
         if (userRepository.existsByEmail(request.email)) {
             throw UserAlreadyExistsException("Email already registered")
         }
-        val company = companyRepository.findById(request.companyId)
-            .orElseThrow {
-                CompanyNotFoundException("Company with id ${request.companyId} not found")
-            }
+
+        val company = if (request.role == Role.SUPER_ADMIN) {
+            null
+        } else {
+            val companyId = request.companyId
+                ?: throw CompanyNotFoundException("Company is required for this role")
+
+            companyRepository.findById(companyId)
+                .orElseThrow {
+                    CompanyNotFoundException("Company with id $companyId not found")
+                }
+        }
+
         val hashedPassword = passwordEncoder.encode(request.password)
         val user = request.toEntity(company, hashedPassword)
         val savedUser = userRepository.save(user)
@@ -66,10 +76,17 @@ class UserService(
         val user = userRepository.findById(id).orElseThrow {
             UserNotFoundException("User with id $id not found")
         }
-        val company = companyRepository.findById(request.companyId)
-            .orElseThrow {
-                CompanyNotFoundException("Company with id ${request.companyId} not found")
-            }
+        val company = if (request.role == Role.SUPER_ADMIN) {
+            null
+        } else {
+            val companyId = request.companyId
+                ?: throw CompanyNotFoundException("Company is required for this role")
+
+            companyRepository.findById(companyId)
+                .orElseThrow {
+                    CompanyNotFoundException("Company with id $companyId not found")
+                }
+        }
         user.firstName = request.firstName
         user.lastName = request.lastName
         user.email = request.email

@@ -26,5 +26,5 @@ data class UpdateUserRequest(
     val role: Role,
 
     @field:Positive(message = "Invalid company id")
-    val companyId: Long
+    val companyId: Long? = null
 )
