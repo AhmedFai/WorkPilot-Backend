@@ -10,7 +10,14 @@ fun CreateCompanyRequest.toEntity(): Company {
     return Company(
         name = name,
         email = email,
-        website = website
+        phone = phone,
+        website = website,
+        addressLine1 = addressLine1,
+        addressLine2 = addressLine2,
+        city = city,
+        state = state,
+        postalCode = postalCode,
+        country = country
     )
 }
 
@@ -19,9 +26,17 @@ fun Company.toResponse(): CompanyResponse {
         id = id!!,
         name = name,
         email = email,
+        phone = phone,
         website = website,
+        addressLine1 = addressLine1,
+        addressLine2 = addressLine2,
+        city = city,
+        state = state,
+        postalCode = postalCode,
+        country = country,
         isActive = isActive,
-        createdAt = createdAt.toString()
+        createdAt = createdAt.toString(),
+        updatedAt = updatedAt.toString()
     )
 }
 

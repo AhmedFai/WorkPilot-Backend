@@ -8,5 +8,6 @@ interface CompanyRepository: JpaRepository<Company, Long>{
     fun existsByEmail(email: String): Boolean
 
     fun findAllByIsActiveTrue(): List<Company>
+    fun existsByEmailAndIdNot(email: String, id: Long): Boolean
 
 }

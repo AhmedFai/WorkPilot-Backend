@@ -11,6 +11,7 @@ import com.faizan.workpilot.mapper.toResponse
 import com.faizan.workpilot.repository.CompanyRepository
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.stereotype.Service
+import java.time.LocalDateTime
 
 @Service
 class CompanyService(
@@ -46,13 +47,32 @@ class CompanyService(
         id: Long,
         request: UpdateCompanyRequest
     ): CompanyResponse {
+
         val company = companyRepository.findById(id).orElseThrow {
             CompanyNotFoundException("Company with id $id not found")
         }
+
+        if (
+            request.email != company.email &&
+            companyRepository.existsByEmailAndIdNot(request.email, id)
+        ) {
+            throw CompanyAlreadyExistsException("Email already registered")
+        }
+
         company.name = request.name
         company.email = request.email
+        company.phone = request.phone
         company.website = request.website
+        company.addressLine1 = request.addressLine1
+        company.addressLine2 = request.addressLine2
+        company.city = request.city
+        company.state = request.state
+        company.postalCode = request.postalCode
+        company.country = request.country
+        company.updatedAt = LocalDateTime.now()
+
         val updatedCompany = companyRepository.save(company)
+
         return updatedCompany.toResponse()
     }
 
