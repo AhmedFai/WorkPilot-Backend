@@ -33,5 +33,6 @@ class User (
     @JoinColumn(name = "company_id")
     var company: Company? = null,
     var isActive: Boolean = true,
-    var createdAt: LocalDateTime = LocalDateTime.now()
+    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var updatedAt: LocalDateTime = LocalDateTime.now()
 )

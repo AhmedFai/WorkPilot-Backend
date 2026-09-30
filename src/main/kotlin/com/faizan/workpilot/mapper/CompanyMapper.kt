@@ -2,6 +2,7 @@ package com.faizan.workpilot.mapper
 
 import com.faizan.workpilot.dto.request.CreateCompanyRequest
 import com.faizan.workpilot.dto.response.CompanyDashboardResponse
+import com.faizan.workpilot.dto.response.CompanyOverviewCompanyResponse
 import com.faizan.workpilot.dto.response.CompanyResponse
 import com.faizan.workpilot.dto.response.SuperAdminCompanyResponse
 import com.faizan.workpilot.entity.Company
@@ -55,5 +56,13 @@ fun Company.toSuperAdminCompanyResponse(): SuperAdminCompanyResponse {
         name = this.name,
         logoUrl = null,
         isActive = this.isActive
+    )
+}
+
+fun Company.toCompanyOverviewResponse(): CompanyOverviewCompanyResponse {
+    return CompanyOverviewCompanyResponse(
+        id = this.id!!,
+        name = this.name,
+        active = this.isActive
     )
 }

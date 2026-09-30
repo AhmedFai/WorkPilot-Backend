@@ -2,6 +2,7 @@ package com.faizan.workpilot.controller
 
 import com.faizan.workpilot.dto.request.CreateCompanyRequest
 import com.faizan.workpilot.dto.request.UpdateCompanyRequest
+import com.faizan.workpilot.dto.request.UpdateCompanyStatusRequest
 import com.faizan.workpilot.dto.response.CompanyResponse
 import com.faizan.workpilot.dto.response.SuccessResponse
 import com.faizan.workpilot.service.CompanyService
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity
 import org.springframework.http.ResponseEntity.status
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
+import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -89,6 +91,25 @@ class CompanyController(
             SuccessResponse(
                 message = "Company deleted successfully",
                 data = deletedCompany
+            )
+        )
+    }
+
+    @PatchMapping("/{id}/status")
+    fun updateCompanyStatus(
+        @PathVariable id: Long,
+        @Valid @RequestBody request: UpdateCompanyStatusRequest
+    ): ResponseEntity<SuccessResponse<CompanyResponse>> {
+
+        val company = companyService.updateCompanyStatus(
+            id = id,
+            request = request
+        )
+
+        return ResponseEntity.ok(
+            SuccessResponse(
+                message = "Company status updated successfully",
+                data = company
             )
         )
     }

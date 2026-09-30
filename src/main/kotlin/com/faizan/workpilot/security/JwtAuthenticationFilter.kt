@@ -1,5 +1,6 @@
 package com.faizan.workpilot.security
 
+import com.faizan.workpilot.enums.Role
 import com.faizan.workpilot.repository.UserRepository
 import com.faizan.workpilot.security.handler.CustomAuthenticationEntryPoint
 import io.jsonwebtoken.JwtException
@@ -34,9 +35,22 @@ class JwtAuthenticationFilter(
             val jwt = authHeader.substring(7)
             val email =
                 jwtService.extractAccessEmail(jwt)
-            val user = userRepository.findByEmail(email)
+            val user = userRepository.findWithCompanyByEmail(email)
 
             if (user == null) {
+                filterChain.doFilter(request, response)
+                return
+            }
+
+            if (!user.isActive) {
+                filterChain.doFilter(request, response)
+                return
+            }
+
+            if (
+                user.role != Role.SUPER_ADMIN &&
+                user.company?.isActive != true
+            ) {
                 filterChain.doFilter(request, response)
                 return
             }

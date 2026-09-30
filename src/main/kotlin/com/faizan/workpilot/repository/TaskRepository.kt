@@ -49,4 +49,15 @@ interface TaskRepository: JpaRepository<Task, Long> {
         status: Status
     ): Long
 
+    fun countByProjectCompanyIdAndStatusAndIsActiveTrue(
+        companyId: Long,
+        status: Status
+    ): Long
+
+    fun countByProjectCompanyIdAndIsActiveTrueAndDeadlineBeforeAndStatusNotIn(
+        companyId: Long,
+        deadline: LocalDateTime,
+        statuses: Collection<Status>
+    ): Long
+
 }

@@ -2,6 +2,7 @@ package com.faizan.workpilot.service
 
 import com.faizan.workpilot.dto.request.CreateCompanyRequest
 import com.faizan.workpilot.dto.request.UpdateCompanyRequest
+import com.faizan.workpilot.dto.request.UpdateCompanyStatusRequest
 import com.faizan.workpilot.dto.response.CompanyResponse
 import com.faizan.workpilot.entity.Company
 import com.faizan.workpilot.exception.CompanyAlreadyExistsException
@@ -86,6 +87,24 @@ class CompanyService(
         company.isActive = false
         val deletedCompany = companyRepository.save(company)
         return deletedCompany.toResponse()
+    }
+
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    fun updateCompanyStatus(
+        id: Long,
+        request: UpdateCompanyStatusRequest
+    ): CompanyResponse {
+
+        val company = companyRepository.findById(id).orElseThrow {
+            CompanyNotFoundException("Company with id $id not found")
+        }
+
+        company.isActive = request.active
+        company.updatedAt = LocalDateTime.now()
+
+        val updatedCompany = companyRepository.save(company)
+
+        return updatedCompany.toResponse()
     }
 
 }

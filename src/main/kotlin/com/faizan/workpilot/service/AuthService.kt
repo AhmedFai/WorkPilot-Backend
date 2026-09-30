@@ -5,6 +5,8 @@ import com.faizan.workpilot.dto.request.RefreshTokenRequest
 import com.faizan.workpilot.dto.response.LoggedInUserResponse
 import com.faizan.workpilot.dto.response.LoginResponse
 import com.faizan.workpilot.dto.response.RefreshTokenResponse
+import com.faizan.workpilot.entity.User
+import com.faizan.workpilot.enums.Role
 import com.faizan.workpilot.exception.AccountDisabledException
 import com.faizan.workpilot.exception.InvalidCredentialsException
 import com.faizan.workpilot.mapper.toResponse
@@ -24,14 +26,10 @@ class AuthService(
         request: LoginRequest
     ): LoginResponse {
         val user =
-            userRepository.findByEmail(request.email)
+            userRepository.findWithCompanyByEmail(request.email)
                 ?: throw InvalidCredentialsException("Invalid email or password")
 
-        if (!user.isActive) {
-            throw AccountDisabledException(
-                "Your account has been deactivated. Please contact your administrator."
-            )
-        }
+        validateUserAccess(user)
 
         val isPasswordMatched = passwordEncoder.matches(
             request.password,
@@ -67,14 +65,18 @@ class AuthService(
         val email = jwtService.extractRefreshEmail(
             request.refreshToken
         )
-        val user = userRepository.findByEmail(email) ?: throw InvalidCredentialsException(
-            "Invalid refresh token"
-        )
-        if (!jwtService.validateRefreshToken(request.refreshToken, user)){
+        val user =
+            userRepository.findWithCompanyByEmail(email)
+                ?: throw InvalidCredentialsException("Invalid refresh token")
+
+        if (!jwtService.validateRefreshToken(request.refreshToken, user)) {
             throw InvalidCredentialsException(
                 "Invalid or expired refresh token"
             )
         }
+
+        validateUserAccess(user)
+
         val accessToken = jwtService.generateAccessToken(user)
         return RefreshTokenResponse(
             accessToken = accessToken
@@ -85,6 +87,25 @@ class AuthService(
         // V1:
         // Nothing to do.
         // Android will remove access and refresh tokens locally.
+    }
+
+
+    private fun validateUserAccess(user: User) {
+
+        if (!user.isActive) {
+            throw AccountDisabledException(
+                "Your account has been deactivated. Please contact your administrator."
+            )
+        }
+
+        if (
+            user.role != Role.SUPER_ADMIN &&
+            user.company?.isActive != true
+        ) {
+            throw AccountDisabledException(
+                "Your company has been deactivated. Please contact your administrator."
+            )
+        }
     }
 
 }

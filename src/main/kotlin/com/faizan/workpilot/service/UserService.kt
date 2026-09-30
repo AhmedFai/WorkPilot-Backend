@@ -17,6 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
+import java.time.LocalDateTime
 
 @Service
 class UserService(
@@ -94,6 +95,7 @@ class UserService(
         user.designation = request.designation
         user.role = request.role
         user.company = company
+        user.updatedAt = LocalDateTime.now()
         val updatedUser = userRepository.save(user)
         return updatedUser.toResponse()
     }
@@ -107,6 +109,7 @@ class UserService(
             UserNotFoundException("User with is $id not found")
         }
         user.isActive = false
+        user.updatedAt = LocalDateTime.now()
         val deletedUser = userRepository.save(user)
         return deletedUser.toResponse()
     }
