@@ -10,6 +10,8 @@ data class CompanyAdminDetailsResponse(
     val role: Role,
     val companyId: Long,
     val companyName: String,
+    val phoneNumber: String,
+    val designation: String,
     val active: Boolean,
     val createdAt: String,
     val updatedAt: String

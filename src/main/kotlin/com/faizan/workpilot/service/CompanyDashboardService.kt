@@ -32,6 +32,8 @@ import com.faizan.workpilot.mapper.toEntity
 import com.faizan.workpilot.security.CurrentUserService
 import org.springframework.data.domain.PageRequest
 import org.springframework.security.crypto.password.PasswordEncoder
+import com.faizan.workpilot.dto.request.UpdateCompanyAdminRequest
+import com.faizan.workpilot.mapper.toCompanyAdminDetailsResponse
 
 @Service
 class CompanyDashboardService(
@@ -280,6 +282,33 @@ class CompanyDashboardService(
             totalElements = activities.totalElements,
             totalPages = activities.totalPages
         )
+    }
+
+
+    @PreAuthorize("hasRole('SUPER_ADMIN')")
+    @Transactional
+    fun updateCompanyAdmin(
+        companyId: Long,
+        adminId: Long,
+        request: UpdateCompanyAdminRequest
+    ): CompanyAdminDetailsResponse {
+
+        val admin = userRepository.findCompanyAdminById(
+            adminId,
+            companyId,
+            Role.ADMIN
+        ) ?: throw UserNotFoundException(
+            "Admin with id $adminId not found in company $companyId"
+        )
+
+        admin.firstName = request.firstName
+        admin.lastName = request.lastName
+        admin.phoneNumber = request.phoneNumber
+        admin.updatedAt = LocalDateTime.now()
+
+        val updatedAdmin = userRepository.save(admin)
+
+        return updatedAdmin.toCompanyAdminDetailsResponse()
     }
 
 

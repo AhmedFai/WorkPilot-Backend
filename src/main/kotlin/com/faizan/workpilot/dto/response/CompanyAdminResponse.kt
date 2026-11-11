@@ -5,6 +5,8 @@ data class CompanyAdminResponse(
     val firstName: String,
     val lastName: String,
     val email: String,
+    val phoneNumber: String,
+    val designation: String,
     val active: Boolean,
     val createdAt: String,
     val updatedAt: String

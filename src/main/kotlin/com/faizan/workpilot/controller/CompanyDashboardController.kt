@@ -2,6 +2,7 @@ package com.faizan.workpilot.controller
 
 import com.faizan.workpilot.dto.request.CreateCompanyAdminRequest
 import com.faizan.workpilot.dto.request.UpdateAdminStatusRequest
+import com.faizan.workpilot.dto.request.UpdateCompanyAdminRequest
 import com.faizan.workpilot.dto.response.CompanyActivityListResponse
 import com.faizan.workpilot.dto.response.CompanyAdminDetailsResponse
 import com.faizan.workpilot.dto.response.CompanyAdminListResponse
@@ -11,6 +12,7 @@ import com.faizan.workpilot.dto.response.SuccessResponse
 import com.faizan.workpilot.service.CompanyDashboardService
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PatchMapping
 import org.springframework.web.bind.annotation.PathVariable
@@ -146,5 +148,28 @@ class CompanyDashboardController(
             )
         )
     }
+
+
+    @PatchMapping("/{companyId}/admins/{adminId}")
+    fun updateCompanyAdmin(
+        @PathVariable companyId: Long,
+        @PathVariable adminId: Long,
+        @Valid @RequestBody request: UpdateCompanyAdminRequest
+    ): ResponseEntity<SuccessResponse<CompanyAdminDetailsResponse>> {
+
+        val admin = companyDashboardService.updateCompanyAdmin(
+            companyId = companyId,
+            adminId = adminId,
+            request = request
+        )
+
+        return ResponseEntity.ok(
+            SuccessResponse(
+                message = "Company admin updated successfully",
+                data = admin
+            )
+        )
+    }
+
 
 }

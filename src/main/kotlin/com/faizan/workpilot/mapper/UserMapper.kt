@@ -64,6 +64,8 @@ fun User.toCompanyAdminResponse(): CompanyAdminResponse {
         lastName = this.lastName,
         email = this.email,
         active = this.isActive,
+        phoneNumber = this.phoneNumber,
+        designation = this.designation,
         createdAt = this.createdAt.toString(),
         updatedAt = this.updatedAt.toString()
     )
@@ -78,7 +80,7 @@ fun CreateCompanyAdminRequest.toEntity(
         lastName = lastName,
         email = email,
         password = hashedPassword,
-        phoneNumber = "",
+        phoneNumber = phoneNumber,
         designation = "ADMIN",
         role = Role.ADMIN,
         company = company
@@ -96,6 +98,8 @@ fun User.toCompanyAdminDetailsResponse(): CompanyAdminDetailsResponse {
         role = this.role,
         companyId = userCompany.id!!,
         companyName = userCompany.name,
+        phoneNumber = this.phoneNumber,
+        designation = this.designation,
         active = this.isActive,
         createdAt = this.createdAt.toString(),
         updatedAt = this.updatedAt.toString()

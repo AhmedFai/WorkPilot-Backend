@@ -15,6 +15,9 @@ data class CreateCompanyAdminRequest(
     @field:Email(message = "Invalid email")
     val email: String,
 
+    @field:NotBlank(message = "Phone number cannot be empty")
+    val phoneNumber: String,
+
     @field:NotBlank(message = "Password cannot be empty")
     val password: String
 )
