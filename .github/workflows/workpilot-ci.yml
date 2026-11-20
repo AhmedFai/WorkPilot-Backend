@@ -54,3 +54,11 @@ jobs:
 
       - name: Build WorkPilot
         run: bash ./gradlew build
+
+      - name: Upload WorkPilot JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: workpilot-backend-jar
+          path: build/libs/workpilot-backend-0.0.1-SNAPSHOT.jar
+          if-no-files-found: error
+          retention-days: 7
