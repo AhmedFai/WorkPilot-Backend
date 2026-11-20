@@ -18,6 +18,27 @@ jobs:
     name: Build WorkPilot Backend
     runs-on: ubuntu-latest
 
+    # Temporary database exclusively for CI testing
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: workpilot
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci_test_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d workpilot"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://localhost:5432/workpilot
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: ci_test_password
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
